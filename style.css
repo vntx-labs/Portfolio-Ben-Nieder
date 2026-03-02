@@ -1,0 +1,247 @@
+:root{
+  --bg-light: #f9fafb;
+  --text-light: #1f2937;
+  --card-bg: #111827;
+  --accent: #0ea5e9; /* blau-ish */
+  --radius: 12px;
+  --card-max-w: 1100px;
+}
+
+/* Light Mode Defaults */
+html,body {
+  box-sizing: border-box;
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
+body {
+  background-color: var(--bg-light);
+  color: var(--text-light);
+  margin: 0;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+/* Card - responsive, fluid sizing */
+.card {
+  background-color: var(--card-bg);
+  color: inherit; /* benutze body / utility Farben (tailwind) */
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+  width: min(95%, var(--card-max-w));
+  max-width: var(--card-max-w);
+  margin: 0 auto;
+  padding: clamp(1rem, 2.5vw, 2.5rem);
+  border-radius: var(--radius);
+  box-shadow: 0 6px 18px rgba(2,6,23,0.12);
+  overflow: hidden;
+}
+
+/* active effect */
+.card.active {
+  transform: translateY(-6px) scale(1.01);
+  box-shadow: 0 12px 36px rgba(2,6,23,0.18);
+}
+
+/* Images: fluid, preserve aspect ratio, crop if needed */
+.card img {
+  width: 100%;
+  height: auto;
+  max-height: clamp(220px, 35vh, 520px);
+  object-fit: cover;
+  display: block;
+  margin: 0 auto;
+  border-radius: 8px;
+  background-color: #0f172a;
+}
+
+/* responsive typography using clamp */
+h1, h2, h3 {
+  margin: 0;
+  line-height: 1.05;
+}
+
+h2 {
+  font-size: clamp(1.6rem, 4.6vw, 3.2rem);
+}
+
+h3 {
+  font-size: clamp(1.15rem, 2.8vw, 1.9rem);
+}
+
+/* paragraph */
+p {
+  font-size: clamp(0.95rem, 1.6vw, 1.125rem);
+  line-height: 1.5;
+}
+
+/* tech tags container - responsive wrapping */
+.card .tech-tags,
+.card .controls,
+.card .indicators {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+/* tags */
+.card .tech-tags span,
+.card .tech-tags .tag {
+  display: inline-block;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 999px;
+  background: rgba(14,165,233,0.08);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* Controls: make buttons touch-friendly and responsive */
+.controls button,
+.controls .zaehler {
+  margin: 0.25rem;
+  padding: clamp(0.45rem, 1.2vw, 0.65rem) clamp(0.6rem, 1.8vw, 1rem);
+  font-size: clamp(0.8rem, 1.6vw, 1rem);
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background-color: #e5e7eb;
+  color: #0f172a;
+  transition: transform .12s ease, background-color .12s ease;
+}
+.controls button:hover { transform: translateY(-2px); }
+
+/* indicators */
+.indicators span {
+  display:inline-block;
+  width:14px;
+  height:14px;
+  margin:0 6px;
+  border-radius:50%;
+  background:#d1d5db;
+  cursor:pointer;
+}
+.indicators span.active {
+  background:var(--accent);
+}
+
+/* Dark Mode Overrides - target html.dark */
+html.dark body {
+  background-color: #0f172a;
+  color: #f9fafb;
+}
+
+html.dark .card {
+  background-color: #0b1220;
+  color: #e6eef8;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+}
+
+html.dark h3, html.dark h2 {
+  color: #f9fafb;
+}
+
+html.dark p {
+  color: #d1d5db;
+}
+
+html.dark .card .tech-tags span {
+  background: rgba(2,6,23,0.45);
+  color: #9ee7ff;
+}
+
+/* Navigation tweaks for small screens */
+nav > div {
+  display:flex;
+  flex-wrap:wrap;
+  gap:0.5rem;
+  align-items:center;
+  justify-content:space-between;
+}
+
+/* force links to wrap / center on small widths */
+nav a {
+  white-space: nowrap;
+}
+
+/* Layout helpers for the projects container (if you switch to grid) */
+#projectCardsContainer {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 1.25rem;
+  width: 100%;
+  margin-top: 0;
+  padding: 0 0.25rem;
+  box-sizing: border-box;
+}
+
+/* Small screens: tighter spacing, stack elements inside card in column */
+@media (max-width: 640px) {
+  .card {
+    padding: 1rem;
+    border-radius: 10px;
+  }
+  .controls {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .controls button, .controls .zaehler {
+    width: 100%;
+    text-align: center;
+  }
+  .indicators {
+    gap: 0.4rem;
+  }
+  .card img {
+    max-height: 42vh;
+  }
+}
+
+/* Medium screens: allow slightly wider cards */
+@media (min-width: 641px) and (max-width: 1024px) {
+  #projectCardsContainer {
+    padding: 0;
+  }
+  .card {
+    width: min(90%, 900px);
+  }
+}
+
+/* Large / Desktop: center and constrain width */
+@media (min-width: 1025px) {
+  #projectCardsContainer {
+    padding: 0;
+  }
+  .card {
+    width: min(80%, var(--card-max-w));
+  }
+}
+
+/* optional accessibility improvements */
+button:focus, a:focus { outline: 3px solid rgba(14,165,233,0.18); outline-offset: 3px; }
+
+/* small utility to ensure images not too large on very wide screens */
+@media (min-width: 1600px) {
+  .card img {
+    max-height: 48vh;
+  }
+}
+
+/* Ausnahme: wenn .card.slim gesetzt ist, reduziere Breite und lasse Bild nicht strecken */
+.card.slim {
+  /* 20% größer als die normale card-max-w, aber nie breiter als 95% des Viewports */
+  width: min(95%, calc(var(--card-max-w) * 1.2));
+  max-width: calc(var(--card-max-w) * 1.2);
+}
+
+/* Bild: keine harten Breiten/Höhen, gleiche max-height wie normale Card */
+.card.slim img {
+  object-fit: contain;           /* Bild vollständig zeigen */
+  width: auto;                   /* Breite nach Inhalt / inline-size */
+  max-inline-size: 100%;         /* in der Card nicht überlaufen */
+  height: 100%;                  /* Höhe füllen */
+  max-height: clamp(220px, 100vh, 520px); /* gleiche Beschränkung wie .card img */
+  flex: 0 0 auto;
+  background-color: transparent;
+}

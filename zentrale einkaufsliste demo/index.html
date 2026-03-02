@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zentrale Einkaufsliste Browser Demo</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+    body {
+        margin: 0;
+        /* Hintergrundbild beibehalten */
+        background-size: cover;
+        font-family: sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background-color: black;
+    }
+
+    #screen {
+        background: url('background.png') no-repeat center center fixed transparent;
+        width: 360px;
+        height: 640px;
+        border-radius: 0; /* Kein Device-Rahmen, nur Screen */
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* NEU: Tasks Screen Styling */
+    #tasksScreen {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        padding-top: 20px;
+        background: rgba(0, 0, 0, 0.9); /* Dunkler Hintergrund für Task-Ansicht */
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 9; 
+        overflow-y: auto;
+    }
+
+    .app-card {
+        width: 80%;
+        height: 90%; 
+        background-color: white;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 10px rgba(255, 255, 255, 0.2);
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+        transition: transform 0.3s, opacity 0.3s;
+    }
+
+    .app-card-title {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        color: black;
+        font-weight: bold;
+        font-size: 14px;
+        z-index: 2;
+    }
+
+    /* Simulation des App-Inhalts/Screenshots */
+    #appCardPreview {
+        background-color: #f3f4f6;
+        width: 100%;
+        height: 100%;
+        padding: 16px;
+        font-size: 12px;
+        color: #333;
+        overflow-y: hidden; 
+        pointer-events: none; 
+        /* Skaliere den Inhalt, um in die Karte zu passen */
+        transform-origin: top left;
+        transform: scale(0.85); 
+        width: 117.65%; 
+        height: 117.65%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        box-sizing: border-box;
+    }
+
+
+    /* Navigationsleiste am unteren Rand */
+    #navBar {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 48px; 
+        background: rgba(0, 0, 0, 0.7); 
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        z-index: 10;
+        padding-bottom: env(safe-area-inset-bottom); 
+    }
+
+    .nav-icon {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        font-size: 20px;
+        color: white;
+        transition: background 0.1s, transform 0.1s;
+        border-radius: 50%;
+    }
+
+    .nav-icon:active {
+        background: rgba(255, 255, 255, 0.2);
+        transform: scale(0.95);
+    }
+    
+    .homescreen-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-gap: 20px 20px;
+        padding: 16px;
+        flex: 1;
+        align-content: start;
+    }
+
+    .app-icon:hover {
+        transform: scale(1.1);
+    }
+
+    .app-icon img {
+        width: 50px;
+        height: 50px;
+        background: #ccc;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+
+    .app-label {
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        cursor: pointer;
+        transition: transform 0.2s;
+        margin-left: -15px;
+    }
+
+    /* App Screen */
+    #appScreen {
+        flex: 1;
+        display: none;
+        flex-direction: column;
+        position: relative;
+        padding: 16px;
+        overflow-y: auto;
+        background: #f3f4f6;
+        padding-bottom: 56px; 
+    }
+
+    /* Liste Container Styling */
+    #listeContainer{
+        flex: 1; 
+        overflow-y: auto; 
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    /* Styling für einzelne Listeneinträge */
+    .list-item {
+        width: 100%;
+        background-color: white;
+        padding: 12px 16px;
+        margin-bottom: 8px;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: background-color 0.2s;
+    }
+
+    /* Floating Action Button */
+    #fabAdd {
+        position: absolute;
+        bottom: 64px; 
+        right: 16px;
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: #3b82f6;
+        color: white;
+        font-size: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        transition: background 0.2s;
+        z-index: 5; 
+    }
+
+    #fabAdd:hover { background: #2563eb; }
+
+    /* Formular */
+    #formScreen {
+        display: none;
+        flex-direction: column;
+        background: white;
+        padding: 16px;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 90%;
+        max-width: 320px;
+        z-index: 10;
+    }
+
+    #formScreen input {
+        margin-bottom: 8px;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+    }
+
+    #formScreen button {
+        padding: 8px;
+        border-radius: 8px;
+        margin-top: 4px;
+    }
+
+    .toast {
+        position: absolute;
+        bottom: 120px; 
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0,0,0,0.8);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 12px;
+        font-size: 14px;
+        opacity: 0;
+        transition: opacity 0.3s;
+        pointer-events: none;
+        z-index: 20;
+    }
+</style>
+</head>
+<body>
+
+<div id="screen">
+        <div id="homescreen" class="flex flex-col">
+        <div class="background" id="Hintergrundbild">
+        </div>
+        <div class="homescreen-grid">
+            <div class="app-icon" id="openEinkaufsliste">
+                <img src="appicon.png" alt="App Icon">
+                <div class="app-label">Einkaufsliste</div>
+            </div>
+        </div>
+            </div>
+
+        <div id="appScreen">
+        <h2 class="text-xl font-bold mb-4 text-center">Zentrale Einkaufsliste</h2>
+        <div id="listeContainer"></div>
+        <div id="fabAdd">+</div>
+        <button id="deleteGekauftBtn" class="bg-red-500 text-white p-2 rounded-lg mt-auto mb-2 shadow-md" style="display:none;">Gekaufte Einträge löschen</button>
+    </div>
+
+        <div id="formScreen">
+        <h3 class="text-lg font-semibold mb-4">Neuen Artikel hinzufügen</h3>
+        <input id="artikelName" type="text" placeholder="Artikelname">
+        <input id="menge" type="text" placeholder="Menge (z.B. 1 Liter, 500 ml, 2 Stk)">
+        <input id="kategorie" type="text" placeholder="Kategorie (Optional)">
+        <button id="addItemBtn" class="bg-blue-600 hover:bg-blue-700 text-white w-full transition duration-150">Hinzufügen</button>
+        <button id="cancelBtn" class="bg-gray-300 hover:bg-gray-400 w-full mt-2 transition duration-150">Abbrechen</button>
+    </div>
+    
+    <div id="tasksScreen">
+        <div id="appCardEinkaufsliste" class="app-card">
+            <div id="appCardPreview">
+                 </div>
+            <span class="app-card-title">Einkaufsliste</span>
+            
+            <div style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(255, 255, 255, 0.9); padding: 5px; text-align: center; font-size: 10px; border-radius: 0 0 12px 12px;">
+                 Klicken Sie auf die obere Hälfte und ziehen Sie die Maus nach oben, um zu schließen.
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <div id="navBar">
+        <div id="navBack" class="nav-icon">◀️</div>
+        <div id="navHome" class="nav-icon">⚪</div>
+        <div id="navTasks" class="nav-icon">⏹️</div>
+    </div>
+</div>
+
+<script>
+    document.getElementById("Hintergrundbild").style.backgroundImage = 'url("background.png")';
+    
+    // --- Navigation Elemente ---
+    const homescreen = document.getElementById('homescreen');
+    const appScreen = document.getElementById('appScreen');
+    const formScreen = document.getElementById('formScreen');
+    const tasksScreen = document.getElementById('tasksScreen'); 
+    const toast = document.getElementById('toast');
+    const listeContainer = document.getElementById('listeContainer');
+    const deleteGekauftBtn = document.getElementById('deleteGekauftBtn');
+    
+    // Navigations-Buttons
+    const navBar = document.getElementById('navBar');
+    const navBack = document.getElementById('navBack');
+    const navHome = document.getElementById('navHome');
+    const navTasks = document.getElementById('navTasks');
+    const appCardEinkaufsliste = document.getElementById('appCardEinkaufsliste'); 
+    const appCardPreview = document.getElementById('appCardPreview');
+    
+    let isAppRunning = false; 
+    let isSwiping = false; 
+    let startY = 0; 
+
+
+    function toggleNavBar(visible) {
+        navBar.style.opacity = visible ? 1 : 0;
+        navBar.style.visibility = visible ? 'visible' : 'hidden';
+    }
+
+
+    // Funktion: Home-Taste 
+    function goHome() {
+        appScreen.style.display = 'none';
+        formScreen.style.display = 'none'; 
+        tasksScreen.style.display = 'none'; 
+        homescreen.style.display = 'flex';
+        toggleNavBar(true);
+    }
+    
+    // Funktion: Zurück zur App aus Tasks-Ansicht
+    function resumeApp() {
+        if (isAppRunning && tasksScreen.style.display === 'flex') {
+            tasksScreen.style.display = 'none';
+            homescreen.style.display = 'none';
+            appScreen.style.display = 'flex';
+            toggleNavBar(true);
+        } else {
+            goHome();
+        }
+    }
+    
+    // Funktion: App-Karte hochwischen/schließen (simuliert das Beenden)
+    function closeAppCard(cardId) {
+        const card = document.getElementById(cardId);
+        if (!card) return;
+
+        // Animation: Hochwischen
+        card.style.transform = 'translateY(-100%)';
+        card.style.opacity = '0';
+
+        // Setze App nach 300ms auf "nicht laufend" und gehe Home
+        setTimeout(() => {
+            isAppRunning = false;
+            // Karte zurücksetzen, damit sie beim nächsten Start wieder erscheint
+            card.style.transform = 'translateY(0)';
+            card.style.opacity = '1'; 
+            goHome(); 
+            showToast("App beendet (Task entfernt)");
+        }, 300); 
+    }
+
+    // Funktion: Tasks/Offene Apps
+    function goTasks() {
+        if (!isAppRunning) {
+             goHome();
+             return;
+        }
+        
+        // NEU: Aktuellen Inhalt der App in die Task-Vorschau kopieren
+        const previewContent = listeContainer.outerHTML; 
+        appCardPreview.innerHTML = `
+            <h2 class="text-xl font-bold mb-4 text-center">Zentrale Einkaufsliste</h2>
+            ${previewContent}
+            <div id="fabAdd" class="bg-blue-600 text-white" style="position: absolute; bottom: 20px; right: 20px; width: 40px; height: 40px; border-radius: 50%; font-size: 24px; display: flex; align-items: center; justify-content: center; opacity: 0.5;">+</div>
+            `;
+
+        // Blende App/Formular aus, zeige Tasks Screen
+        homescreen.style.display = 'none';
+        appScreen.style.display = 'none';
+        formScreen.style.display = 'none';
+
+        tasksScreen.style.display = 'flex';
+        toggleNavBar(true);
+    }
+
+    // Funktion: Zurück-Taste 
+    function goBack() {
+        if (formScreen.style.display === 'flex') {
+            formScreen.style.display = 'none';
+            listeContainer.style.display = 'flex';
+        } else if (appScreen.style.display === 'flex') {
+            goHome();
+        } else if (tasksScreen.style.display === 'flex') {
+            goHome();
+        }
+    }
+    
+    // --- Event-Listener für App-Karten (Wischgesten-Simulation) ---
+    
+    appCardEinkaufsliste.addEventListener('click', resumeApp);
+    
+    appCardEinkaufsliste.addEventListener('mousedown', (e) => {
+        if (e.button !== 0) return; 
+        
+        const rect = appCardEinkaufsliste.getBoundingClientRect();
+        if (e.clientY - rect.top < rect.height * 0.5) {
+            isSwiping = true;
+            startY = e.clientY;
+            e.stopPropagation(); 
+        }
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (!isSwiping) return;
+
+        const deltaY = startY - e.clientY; 
+        const card = appCardEinkaufsliste;
+        
+        if (deltaY > 0) {
+            card.style.transition = 'none'; 
+            card.style.transform = `translateY(-${deltaY * 0.7}px)`; 
+            card.style.opacity = 1 - (deltaY / 150);
+        }
+    });
+
+    document.addEventListener('mouseup', (e) => {
+        if (!isSwiping) return;
+        
+        isSwiping = false;
+        
+        const deltaY = startY - e.clientY;
+        const card = appCardEinkaufsliste;
+        
+        card.style.transition = 'transform 0.3s, opacity 0.3s'; 
+        
+        if (deltaY > 50) { 
+            closeAppCard('appCardEinkaufsliste');
+        } else {
+            card.style.transform = 'translateY(0)';
+            card.style.opacity = '1';
+        }
+        
+    });
+
+
+    // --- Event-Listener für Navigation Buttons ---
+    navBack.addEventListener('click', goBack);
+    navHome.addEventListener('click', goHome);
+    navTasks.addEventListener('click', goTasks);
+    
+    // Funktion: App starten
+    document.getElementById('openEinkaufsliste').addEventListener('click', () => {
+        homescreen.style.display = 'none';
+        appScreen.style.display = 'flex';
+        isAppRunning = true; 
+        renderListe();
+        toggleNavBar(true);
+    });
+
+    // Funktion: Gekaufte löschen ist nun redundant, aber bleibt im Code für alle Fälle
+    document.getElementById('deleteGekauftBtn').addEventListener('click', () => {
+        let liste = ladeListe();
+        const ungekaufteListe = liste.filter(eintrag => !eintrag.gekauft);
+        speichereListe(ungekaufteListe);
+        renderListe();
+        showToast("Alle gekauften (und noch vorhandenen) Einträge gelöscht!");
+    });
+
+    function showToast(msg) {
+        toast.textContent = msg;
+        toast.style.opacity = 1;
+        setTimeout(() => toast.style.opacity = 0, 2000);
+    }
+
+    // Funktion: Formular öffnen/schließen (via FAB oder Abbrechen-Button)
+    document.getElementById('fabAdd').addEventListener('click', () => {
+        formScreen.style.display = 'flex';
+    });
+    document.getElementById('cancelBtn').addEventListener('click', goBack);
+
+    // --- LocalStorage & Mengenlogik (Unverändert) ---
+    const STORAGE_KEY = 'einkaufsliste_demo';
+    function ladeListe() { 
+        const liste = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); 
+        // WICHTIG: Filtern Sie hier alle gekauften Elemente heraus, um die "sofort löschen"-Logik zu simulieren
+        return liste.filter(item => !item.gekauft).map(item => ({
+            artikelName: item.artikelName,
+            menge: item.menge,
+            kategorie: item.kategorie || "Sonstiges",
+            // Da wir filtern, ist gekauft immer false für die Anzeige
+            gekauft: false 
+        }));
+    }
+    function speichereListe(liste) { localStorage.setItem(STORAGE_KEY, JSON.stringify(liste)); }
+
+    const einheitenMapping = {
+        'ml': {type:'volumen', factor:1}, 'milliliter': {type:'volumen', factor:1},
+        'l': {type:'volumen', factor:1000}, 'liter': {type:'volumen', factor:1000},
+        'g': {type:'gewicht', factor:1}, 'gramm': {type:'gewicht', factor:1},
+        'kg': {type:'gewicht', factor:1000}, 'kilogramm': {type:'gewicht', factor:1000},
+        'stk': {type:'anzahl', factor:1}, 'stück': {type:'anzahl', factor:1}
+    };
+
+    function addMengenMitUmrechnung(alteMenge, neueMenge) {
+        const regex = /([\d.,]+)\s*(\w+)/;
+        const alteMatch = alteMenge.match(regex);
+        const neueMatch = neueMenge.match(regex);
+        if(!alteMatch || !neueMatch) return alteMenge+' + '+neueMenge;
+
+        let zahlAlt=parseFloat(alteMatch[1].replace(',','.'));
+        let zahlNeu=parseFloat(neueMatch[1].replace(',','.'));
+        let einheitAlt=alteMatch[2].toLowerCase();
+        let einheitNeu=neueMatch[2].toLowerCase();
+
+        const mappingAlt = einheitenMapping[einheitAlt];
+        const mappingNeu = einheitenMapping[einheitNeu];
+        if(!mappingAlt||!mappingNeu||mappingAlt.type!==mappingNeu.type) return alteMenge+' + '+neueMenge;
+
+        let basisAlt = zahlAlt*mappingAlt.factor;
+        let basisNeu = zahlNeu*mappingNeu.factor;
+        let summeBasis = basisAlt+basisNeu;
+
+        if(mappingAlt.type==='volumen') return summeBasis>=1000 ? (summeBasis/1000).toFixed(2).replace('.', ',')+' l' : summeBasis.toFixed(0)+' ml';
+        if(mappingAlt.type==='gewicht') return summeBasis>=1000 ? (summeBasis/1000).toFixed(2).replace('.', ',')+' kg' : summeBasis.toFixed(0)+' g';
+        if(mappingAlt.type==='anzahl') return summeBasis%1===0 ? summeBasis.toFixed(0)+' stk' : summeBasis.toFixed(2).replace('.', ',')+' stk';
+        return alteMenge+' + '+neueMenge;
+    }
+
+    // --- Listen-Rendering (Wiederhergestellte Löschlogik) ---
+    function renderListe(){
+        listeContainer.innerHTML='';
+        const liste=ladeListe(); // lädt nur UNGEKAUFTE Einträge
+
+        // Da alle Elemente ungekauft sind, ist hier keine Sortierung nach Kaufstatus nötig
+        
+        liste.forEach((eintrag, index) => {
+            const div = document.createElement('div');
+            div.className = 'list-item'; 
+            // In dieser Version wird keine Styling-Änderung für "gekauft" benötigt, da es sofort gelöscht wird
+            
+            div.innerHTML = `
+                <div class="flex flex-col flex-1 mr-4">
+                    <p class="font-semibold text-gray-800">${eintrag.artikelName}</p>
+                    <p class="text-sm text-gray-600">${eintrag.menge}</p>
+                    <p class="text-xs text-gray-400 mt-1">${eintrag.kategorie}</p>
+                </div>`;
+            
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.checked = false; // Ist immer false, da wir nur ungekaufte anzeigen
+            checkbox.className = 'w-5 h-5 cursor-pointer';
+
+            // *** KORRIGIERTE LOGIK: SOFORT LÖSCHEN BEIM ABHAKEN ***
+            checkbox.addEventListener('change', () => {
+                if (checkbox.checked) {
+                    // Artikel markieren als gekauft (vorübergehend)
+                    eintrag.gekauft = true; 
+                    
+                    // Liste filtern: Aktuellen Artikel entfernen
+                    const neueListe = ladeListe().filter(item => item.artikelName !== eintrag.artikelName);
+                    
+                    // Speichern der bereinigten Liste
+                    speichereListe(neueListe);
+                    
+                    // Liste neu rendern
+                    renderListe(); 
+                    showToast(`${eintrag.artikelName} als gekauft entfernt.`);
+                }
+            });
+            
+            div.appendChild(checkbox);
+            listeContainer.appendChild(div);
+        });
+        
+        // Der Löschen-Button wird in dieser Logik kaum benötigt, daher ausgeblendet
+        deleteGekauftBtn.style.display = 'none';
+    }
+
+    document.getElementById('addItemBtn').addEventListener('click', () => {
+        const name = document.getElementById('artikelName').value.trim();
+        const menge = document.getElementById('menge').value.trim();
+        let kategorie = document.getElementById('kategorie').value.trim();
+        if (!name || !menge) { showToast("Artikelname und Menge erforderlich"); return; }
+        if (!kategorie) { kategorie = "Sonstiges"; }
+
+        let liste = ladeListe();
+        
+        // Prüfen, ob Artikelname existiert (zur Konsolidierung der Menge)
+        const idx = liste.findIndex(e => e.artikelName.toLowerCase() === name.toLowerCase());
+        
+        if (idx >= 0) {
+            const neueMenge = addMengenMitUmrechnung(liste[idx].menge, menge);
+            liste[idx].menge = neueMenge;
+            liste[idx].kategorie = kategorie; 
+            
+        } else {
+            // Artikel ist neu, neu hinzufügen (mit gekauft: false)
+            liste.push({artikelName: name, menge: menge, kategorie: kategorie, gekauft: false});
+        }
+
+        speichereListe(liste);
+        renderListe();
+        formScreen.style.display = 'none';
+        listeContainer.style.display = "flex";
+        showToast("Eintrag hinzugefügt!");
+
+        // Eingabefelder leeren
+        document.getElementById('artikelName').value = '';
+        document.getElementById('menge').value = '';
+        document.getElementById('kategorie').value = '';
+    });
+
+
+    // Initialer Aufruf
+    renderListe(); 
+
+</script>
+
+</body>
+</html>
