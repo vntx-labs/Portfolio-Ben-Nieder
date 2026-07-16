@@ -5,7 +5,7 @@ const PROJECTS = [
     description: "Desktop-App (Electron) zur Haushaltsverwaltung, umgebaut zur Web-Demo mit LocalStorage. Zeigt Login, Budgetierung und Transaktionsverwaltung.",
     screenshot: "img/finanztracker.png",
     liveUrl: "Finanz-Tracker-Demo/index.html",
-    downloadUrl: "https://drive.google.com/uc?export=download&id=1jfd5TEIRjK1lPOXpUrhTXqLLWQdghilf",
+    downloadUrl: "",
     techTags: ["Electron", "Node.js", "JavaScript", "Tailwind CSS"]
   },
   {
@@ -23,7 +23,7 @@ const PROJECTS = [
     description: "Eine Android-App zur Verwaltung von Einkaufslisten. Unterstützt automatische Mengenzusammenführung, Live-Updates, Artikelkategorien und ein einfaches UI mit Checkboxen zum Abhaken von Artikeln. Alles läuft offline mit Room-Datenbank und MVVM-Architektur.",
     screenshot: "img/zentraleeinkaufsliste.png",
     liveUrl: "Zentrale Einkaufsliste Demo",
-    downloadUrl: "https://drive.google.com/uc?export=download&id=1z9tL0imNCx0H3_V9DhkTYg82O0NXKw1j",
+    downloadUrl: "",
     techTags: ["Java", "Android Studio", "Room Database", "MVVM", "LiveData", "RecyclerView", "ViewBinding"]
   }
 ];
