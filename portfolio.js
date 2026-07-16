@@ -23,7 +23,7 @@ const PROJECTS = [
     description: "Eine Android-App zur Verwaltung von Einkaufslisten. Unterstützt automatische Mengenzusammenführung, Live-Updates, Artikelkategorien und ein einfaches UI mit Checkboxen zum Abhaken von Artikeln. Alles läuft offline mit Room-Datenbank und MVVM-Architektur.",
     screenshot: "img/zentraleeinkaufsliste.png",
     liveUrl: "Zentrale Einkaufsliste Demo",
-    downloadUrl: "",
+    downloadUrl: "https://drive.google.com/uc?export=download&id=1kDhrEdGKTPVD9hM74f66MxWKVFAMYAWD",
     techTags: ["Java", "Android Studio", "Room Database", "MVVM", "LiveData", "RecyclerView", "ViewBinding"]
   }
 ];
