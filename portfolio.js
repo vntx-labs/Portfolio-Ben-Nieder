@@ -28,121 +28,185 @@ const PROJECTS = [
   }
 ];
 
-const projectCardsContainer = document.getElementById('projectCardsContainer');
+const projectCardsContainer = document.getElementById("projectCardsContainer");
+const modal = document.getElementById("projectModal");
+const modalContent = document.getElementById("modalContent");
 
-function renderSingleProject(index, zaehler) {
-  const project = PROJECTS[index];
-  projectCardsContainer.innerHTML = `
-    <div class="card active p-8 rounded-xl shadow-lg border-t-4 border-blue-600 dark:border-blue-500 text-center">
-      <img src="${project.screenshot}" alt="${project.title}" class="mb-6">
-      <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">${project.title}</h3>
-      <p class="text-lg text-gray-600 dark:text-gray-400 mb-4">${project.description}</p>
-      <div class="flex flex-wrap justify-center gap-2 pt-2 mb-4">
-        ${project.techTags.map(tag=>`
-          <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">${tag}</span>
-        `).join('')}
-      </div>
-      <div class="flex justify-center gap-3 pt-4 border-t border-gray-100 dark:border-gray-700 mt-4 mb-4">
-        ${project.liveUrl ? `<a href="${project.liveUrl}" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg shadow-md transition text-sm">Live Demo 🌐</a>` : ""}
-        ${project.downloadUrl ? `<a href="${project.downloadUrl}" target="_blank" class="bg-gray-500 hover:bg-gray-600 text-white font-medium py-2 px-4 rounded-lg shadow-md transition text-sm">Download 💾</a>` : ""}
-      </div>
-      <div class="indicators mb-4"></div>
-      <div class="controls mt-2 flex justify-center gap-4">
-        <button class="prev bg-gray-200 px-3 py-1">Zurück</button>
-        <button class="pause bg-gray-200 px-3 py-1">Stopp</button>
-        <button class="next bg-gray-200 px-3 py-1">Nächstes</button>
-        <label class="zaehler bg-gray-200 px-3 py-1">Noch <span id="zaehler">${zaehler}</span> Sekunden bis zum nächsten Projekt</label>
-      </div>
-    </div>
-  `;
-  applySlimIfNeeded(project);
+function renderProjects() {
+
+    projectCardsContainer.innerHTML = PROJECTS.map(project => `
+
+        <div
+            class="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-2 transition duration-300 cursor-pointer group"
+            data-id="${project.id}">
+
+            <img
+                src="${project.screenshot}"
+                alt="${project.title}"
+                class="w-full h-56 object-cover">
+
+            <div class="p-6">
+
+                <h3 class="text-2xl font-bold mb-3 dark:text-white">
+
+                    ${project.title}
+
+                </h3>
+
+                <p class="text-gray-600 dark:text-gray-400 line-clamp-3">
+
+                    ${project.description}
+
+                </p>
+
+                <div class="flex flex-wrap gap-2 mt-5">
+
+                    ${project.techTags.map(tag=>`
+
+                        <span class="px-3 py-1 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300 text-xs font-semibold">
+
+                            ${tag}
+
+                        </span>
+
+                    `).join("")}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    `).join("");
+
 }
 
-function applySlimIfNeeded(project) {
-  const card = projectCardsContainer.querySelector('.card');
-  if (!card) return;
-  const img = card.querySelector('img');
-  const src = img ? img.getAttribute('src') || '' : '';
-  const isEinkauf = /zentraleeinkaufsliste/i.test(src);
+function openProject(id){
 
-  if (isEinkauf) {
-    card.classList.add('slim');
+    const project = PROJECTS.find(p=>p.id==id);
 
-    // dynamisch Breite auf +20% setzen (begrenzen auf 95vw)
-    const parentWidth = document.documentElement.clientWidth;
-    const currentWidth = card.getBoundingClientRect().width || Math.min(parentWidth * 0.8, parseFloat(getComputedStyle(card).maxWidth) || parentWidth * 0.8);
-    const target = Math.min(parentWidth * 0.95, Math.round(currentWidth * 1.2));
-    card.style.width = target + 'px';
-  } else {
-    card.classList.remove('slim');
-    card.style.width = ''; // zurücksetzen auf CSS-Default
-  }
+    modalContent.innerHTML=`
+
+        <img
+            src="${project.screenshot}"
+            class="w-full h-80 object-cover">
+
+        <div class="p-8">
+
+            <div class="flex justify-between items-start">
+
+                <h2 class="text-3xl font-bold dark:text-white">
+
+                    ${project.title}
+
+                </h2>
+
+                <button
+                    id="closeModal"
+                    class="text-4xl text-gray-500 hover:text-red-500">
+
+                    &times;
+
+                </button>
+
+            </div>
+
+            <p class="mt-6 text-lg text-gray-600 dark:text-gray-300">
+
+                ${project.description}
+
+            </p>
+
+            <div class="flex flex-wrap gap-2 mt-8">
+
+                ${project.techTags.map(tag=>`
+
+                    <span class="px-4 py-2 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300">
+
+                        ${tag}
+
+                    </span>
+
+                `).join("")}
+
+            </div>
+
+            <div class="flex gap-4 mt-10">
+
+                ${project.liveUrl ? `
+
+                    <a
+                        href="${project.liveUrl}"
+                        target="_blank"
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl">
+
+                        🌐 Live Demo
+
+                    </a>
+
+                ` : ""}
+
+                ${project.downloadUrl ? `
+
+                    <a
+                        href="${project.downloadUrl}"
+                        target="_blank"
+                        class="bg-gray-700 hover:bg-gray-800 text-white px-6 py-3 rounded-xl">
+
+                        💾 Download
+
+                    </a>
+
+                ` : ""}
+
+            </div>
+
+        </div>
+
+    `;
+
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+
+    document.getElementById("closeModal").onclick = closeModal;
+
 }
 
-function initCarousel() {
-  let currentIndex = 0;
-  let interval = null;
-  let countdownInterval = null;
-  let isPaused = false;
-  let zaehler = 60; // Sekunden bis zum nächsten Projekt
+function closeModal(){
 
-  function updateZaehlerLabel() {
-    const zaehlerSpan = document.getElementById('zaehler');
-    if (zaehlerSpan) zaehlerSpan.textContent = zaehler;
-  }
+    modal.classList.remove("flex");
+    modal.classList.add("hidden");
 
-  function startIntervals() {
-    clearInterval(interval);
-    clearInterval(countdownInterval);
-    interval = setInterval(nextProject, 60000);
-    countdownInterval = setInterval(() => {
-      if (!isPaused) {
-        zaehler--;
-        updateZaehlerLabel();
-        if (zaehler <= 0) zaehler = 60;
-      }
-    }, 1000);
-  }
-
-  function nextProject() {
-    currentIndex = (currentIndex+1) % PROJECTS.length;
-    zaehler = 60;
-    renderSingleProject(currentIndex, zaehler);
-    updateZaehlerLabel();
-  }
-  function prevProject() {
-    currentIndex = (currentIndex-1+PROJECTS.length) % PROJECTS.length;
-    zaehler = 60;
-    renderSingleProject(currentIndex, zaehler);
-    updateZaehlerLabel();
-  }
-
-  renderSingleProject(currentIndex, zaehler);
-  startIntervals();
-
-  projectCardsContainer.addEventListener('click', e=>{
-    if(e.target.classList.contains('next')) {
-      nextProject();
-      zaehler = 60;
-      updateZaehlerLabel();
-    }
-    if(e.target.classList.contains('prev')) {
-      prevProject();
-      zaehler = 60;
-      updateZaehlerLabel();
-    }
-    if(e.target.classList.contains('pause')){
-      if(isPaused){
-        startIntervals();
-        e.target.textContent="Stopp";
-      } else {
-        clearInterval(interval);
-        clearInterval(countdownInterval);
-        e.target.textContent="Start";
-      }
-      isPaused=!isPaused;
-    }
-  });
 }
 
-document.addEventListener('DOMContentLoaded', initCarousel);
+projectCardsContainer.addEventListener("click", e=>{
+
+    const card = e.target.closest("[data-id]");
+
+    if(!card) return;
+
+    openProject(card.dataset.id);
+
+});
+
+modal.addEventListener("click", e=>{
+
+    if(e.target===modal){
+
+        closeModal();
+
+    }
+
+});
+
+document.addEventListener("keydown", e=>{
+
+    if(e.key==="Escape"){
+
+        closeModal();
+
+    }
+
+});
+
+document.addEventListener("DOMContentLoaded", renderProjects);
