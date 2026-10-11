@@ -288,8 +288,8 @@
         <div id="formScreen">
         <h3 class="text-lg font-semibold mb-4">Neuen Artikel hinzufügen</h3>
         <input id="artikelName" type="text" placeholder="Artikelname">
-        <input id="menge" type="text" placeholder="Menge (z.B. 1 Liter, 500 ml, 2 Stk)">
-        <input id="kategorie" type="text" placeholder="Kategorie (Optional)">
+        <input id="menge" type="text" placeholder="Menge">
+        <input id="Einheit" type="text" placeholder="Einheit z. B. ml, Liter, Stck">
         <button id="addItemBtn" class="bg-blue-600 hover:bg-blue-700 text-white w-full transition duration-150">Hinzufügen</button>
         <button id="cancelBtn" class="bg-gray-300 hover:bg-gray-400 w-full mt-2 transition duration-150">Abbrechen</button>
     </div>
@@ -514,7 +514,7 @@
         return liste.filter(item => !item.gekauft).map(item => ({
             artikelName: item.artikelName,
             menge: item.menge,
-            kategorie: item.kategorie || "Sonstiges",
+            Einheit: item.Einheit || "Sonstiges",
             // Da wir filtern, ist gekauft immer false für die Anzeige
             gekauft: false 
         }));
@@ -570,7 +570,7 @@
                 <div class="flex flex-col flex-1 mr-4">
                     <p class="font-semibold text-gray-800">${eintrag.artikelName}</p>
                     <p class="text-sm text-gray-600">${eintrag.menge}</p>
-                    <p class="text-xs text-gray-400 mt-1">${eintrag.kategorie}</p>
+                    <p class="text-xs text-gray-400 mt-1">${eintrag.Einheit}</p>
                 </div>`;
             
             const checkbox = document.createElement('input');
@@ -607,9 +607,9 @@
     document.getElementById('addItemBtn').addEventListener('click', () => {
         const name = document.getElementById('artikelName').value.trim();
         const menge = document.getElementById('menge').value.trim();
-        let kategorie = document.getElementById('kategorie').value.trim();
+        let Einheit = document.getElementById('Einheit').value.trim();
         if (!name || !menge) { showToast("Artikelname und Menge erforderlich"); return; }
-        if (!kategorie) { kategorie = "Sonstiges"; }
+        if (!Einheit) { Einheit = ""; }
 
         let liste = ladeListe();
         
@@ -619,11 +619,11 @@
         if (idx >= 0) {
             const neueMenge = addMengenMitUmrechnung(liste[idx].menge, menge);
             liste[idx].menge = neueMenge;
-            liste[idx].kategorie = kategorie; 
+            liste[idx].Einheit = Einheit; 
             
         } else {
             // Artikel ist neu, neu hinzufügen (mit gekauft: false)
-            liste.push({artikelName: name, menge: menge, kategorie: kategorie, gekauft: false});
+            liste.push({artikelName: name, menge: menge, Einheit: Einheit, gekauft: false});
         }
 
         speichereListe(liste);
@@ -635,7 +635,7 @@
         // Eingabefelder leeren
         document.getElementById('artikelName').value = '';
         document.getElementById('menge').value = '';
-        document.getElementById('kategorie').value = '';
+        document.getElementById('Einheit').value = '';
     });
 
 
