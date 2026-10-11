@@ -13,7 +13,7 @@ const PROJECTS = [
     title: "BlogConnect",
     description: "Eine moderne, reaktionsschnelle Blog-Plattform (SPA) mit vollständigem Content Management System (CRUD) für Posts und Kommentare. Beinhaltet eine Benutzerauthentifizierung, Tag-Filterung, einen personalisierten Feed sowie eine Author-Follow-Funktion. (Bei Klick auf Live Demo kann es bis zu 1 Minute dauern bis der Render-Dienst aufwacht)",
     screenshot: "img/blogconnect.png",
-    liveUrl: "https://tinyurl.com/BlogConnect",
+    liveUrl: "https://tinyurl.com",
     downloadUrl: "",
     techTags: ["JavaScript (Vanilla)", "HTML5", "Tailwind CSS", "SPA", "Node.js (Impl. API)"]
   },
@@ -23,7 +23,7 @@ const PROJECTS = [
     description: "Eine Android-App zur Verwaltung von Einkaufslisten. Unterstützt automatische Mengenzusammenführung, Live-Updates, Artikelkategorien und ein einfaches UI mit Checkboxen zum Abhaken von Artikeln. Alles läuft offline mit Room-Datenbank und MVVM-Architektur.",
     screenshot: "img/zentraleeinkaufsliste.png",
     liveUrl: "Zentrale Einkaufsliste Demo",
-    downloadUrl: "https://drive.google.com/uc?export=download&id=1kDhrEdGKTPVD9hM74f66MxWKVFAMYAWD",
+    downloadUrl: "https://google.com",
     techTags: ["Java", "Android Studio", "Room Database", "MVVM", "LiveData", "RecyclerView", "ViewBinding"]
   }
 ];
@@ -33,191 +33,149 @@ const modal = document.getElementById("projectModal");
 const modalContent = document.getElementById("modalContent");
 
 function renderProjects() {
-
     projectCardsContainer.innerHTML = PROJECTS.map(project => `
-
         <div
-            class="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-2 transition duration-300 cursor-pointer group"
+            class="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-2 transition duration-300 cursor-pointer group flex flex-col h-full"
             data-id="${project.id}">
 
-            <div class="w-full h-56 bg-gray-100 dark:bg-gray-900 flex justify-center items-center overflow-hidden">
+            <!-- Bild-Container mit modernem, weichgezeichnetem Hintergrund-Effekt für alle Bildgrößen -->
+            <div class="relative w-full h-56 bg-gray-100 dark:bg-gray-900/60 overflow-hidden flex justify-center items-center">
+                <div 
+                    class="absolute inset-0 bg-cover bg-center blur-md opacity-20 scale-110 pointer-events-none"
+                    style="background-image: url('${project.screenshot}')">
+                </div>
                 <img
                     src="${project.screenshot}"
                     alt="${project.title}"
-                    class="h-full w-auto object-contain" 
+                    class="relative z-10 h-full w-auto max-w-full object-contain p-2 transition duration-300 group-hover:scale-105" 
                 />
             </div>
 
-
-
-            <div class="p-6">
-
-                <h3 class="text-2xl font-bold mb-3 dark:text-white">
-
-                    ${project.title}
-
-                </h3>
-
-                <p class="text-gray-600 dark:text-gray-400 line-clamp-3">
-
-                    ${project.description}
-
-                </p>
-
-                <div class="flex flex-wrap gap-2 mt-5">
-
-                    ${project.techTags.map(tag=>`
-
-                        <span class="px-3 py-1 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300 text-xs font-semibold">
-
-                            ${tag}
-
-                        </span>
-
-                    `).join("")}
-
+            <!-- Inhalts-Bereich -->
+            <div class="p-6 flex flex-col flex-grow justify-between">
+                <div>
+                    <h3 class="text-xl font-bold mb-2 text-gray-900 dark:text-white line-clamp-1 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition">
+                        ${project.title}
+                    </h3>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm line-clamp-3 mb-4">
+                        ${project.description}
+                    </p>
                 </div>
 
+                <!-- Tech Tags -->
+                <div class="flex flex-wrap gap-1.5 mt-auto">
+                    ${project.techTags.map(tag => `
+                        <span class="px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300 text-[11px] font-medium tracking-wide">
+                            \${tag}
+                        </span>
+                    `).join("")}
+                </div>
             </div>
-
         </div>
-
     `).join("");
-
 }
 
-function openProject(id){
+function openProject(id) {
+    const project = PROJECTS.find(p => p.id == id);
+    if (!project) return;
 
-    const project = PROJECTS.find(p=>p.id==id);
-
-    modalContent.innerHTML=`
-
-        <div class="w-full bg-gray-100 dark:bg-gray-900/50 flex justify-center items-center overflow-hidden rounded-xl mb-6 p-4">
-            <img
-                src="${project.screenshot}"
-                alt="${project.title}"
-                class="max-h-[400px] w-auto object-contain image-render-crisp" 
-            />
-        </div>
-        
-
-
-        <div class="p-8">
-
-            <div class="flex justify-between items-start">
-
-                <h2 class="text-3xl font-bold dark:text-white">
-
-                    ${project.title}
-
-                </h2>
-
-                <button
-                    id="closeModal"
-                    class="text-4xl text-gray-500 hover:text-red-500">
-
-                    &times;
-
-                </button>
-
+    modalContent.innerHTML = `
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 p-4 md:p-6 max-h-[85vh] overflow-y-auto">
+            
+            <!-- Linke Spalte (Modal-Bild-Container): Perfekt für Smartphone- & Desktop-Formate -->
+            <div class="md:col-span-5 w-full bg-gray-100 dark:bg-gray-900/40 rounded-xl overflow-hidden flex justify-center items-center p-4 relative min-h-[300px] md:min-h-[450px]">
+                <div 
+                    class="absolute inset-0 bg-cover bg-center blur-lg opacity-10 scale-110 pointer-events-none"
+                    style="background-image: url('${project.screenshot}')">
+                </div>
+                <img
+                    src="${project.screenshot}"
+                    alt="${project.title}"
+                    class="relative z-10 max-h-[420px] w-auto max-w-full object-contain rounded-lg shadow-md image-render-crisp" 
+                />
             </div>
+            
+            <!-- Rechte Spalte (Projektdetails) -->
+            <div class="md:col-span-7 flex flex-col justify-between py-2">
+                <div>
+                    <div class="flex justify-between items-start gap-4">
+                        <h2 class="text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-white leading-tight">
+                            ${project.title}
+                        </h2>
+                        <button
+                            id="closeModal"
+                            class="text-3xl text-gray-400 hover:text-red-500 transition p-1 leading-none"
+                            aria-label="Schließen">
+                            &times;
+                        </button>
+                    </div>
 
-            <p class="mt-6 text-lg text-gray-600 dark:text-gray-300">
+                    <p class="mt-4 text-sm md:text-base text-gray-600 dark:text-gray-300 leading-relaxed">
+                        ${project.description}
+                    </p>
 
-                ${project.description}
+                    <!-- Tech Tags -->
+                    <div class="flex flex-wrap gap-2 mt-6">
+                        ${project.techTags.map(tag => `
+                            <span class="px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-700/50 text-gray-800 dark:text-gray-200 text-xs font-semibold">
+                                \${tag}
+                            </span>
+                        `).join("")}
+                    </div>
+                </div>
 
-            </p>
+                <!-- Action Buttons -->
+                <div class="flex flex-wrap gap-3 mt-8">
+                    ${project.liveUrl ? `
+                        <a
+                            href="\${project.liveUrl}"
+                            target="_blank"
+                            class="inline-flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white font-medium px-5 py-2.5 rounded-xl text-sm transition shadow-sm hover:shadow">
+                            🌐 Live Demo
+                        </a>
+                    ` : ""}
 
-            <div class="flex flex-wrap gap-2 mt-8">
-
-                ${project.techTags.map(tag=>`
-
-                    <span class="px-4 py-2 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300">
-
-                        ${tag}
-
-                    </span>
-
-                `).join("")}
-
-            </div>
-
-            <div class="flex gap-4 mt-10">
-
-                ${project.liveUrl ? `
-
-                    <a
-                        href="${project.liveUrl}"
-                        target="_blank"
-                        class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl">
-
-                        🌐 Live Demo
-
-                    </a>
-
-                ` : ""}
-
-                ${project.downloadUrl ? `
-
-                    <a
-                        href="${project.downloadUrl}"
-                        target="_blank"
-                        class="bg-gray-700 hover:bg-gray-800 text-white px-6 py-3 rounded-xl">
-
-                        💾 Download
-
-                    </a>
-
-                ` : ""}
-
+                    ${project.downloadUrl ? `
+                        <a
+                            href="\${project.downloadUrl}"
+                            target="_blank"
+                            class="inline-flex items-center justify-center bg-gray-700 hover:bg-gray-600 text-white font-medium px-5 py-2.5 rounded-xl text-sm transition shadow-sm hover:shadow">
+                            💾 Download
+                        </a>
+                    ` : ""}
+                </div>
             </div>
 
         </div>
-
     `;
 
     modal.classList.remove("hidden");
     modal.classList.add("flex");
 
     document.getElementById("closeModal").onclick = closeModal;
-
 }
 
-function closeModal(){
-
+function closeModal() {
     modal.classList.remove("flex");
     modal.classList.add("hidden");
-
 }
 
-projectCardsContainer.addEventListener("click", e=>{
-
+projectCardsContainer.addEventListener("click", e => {
     const card = e.target.closest("[data-id]");
-
-    if(!card) return;
-
+    if (!card) return;
     openProject(card.dataset.id);
-
 });
 
-modal.addEventListener("click", e=>{
-
-    if(e.target===modal){
-
+modal.addEventListener("click", e => {
+    if (e.target === modal) {
         closeModal();
-
     }
-
 });
 
-document.addEventListener("keydown", e=>{
-
-    if(e.key==="Escape"){
-
+document.addEventListener("keydown", e => {
+    if (e.key === "Escape") {
         closeModal();
-
     }
-
 });
 
 document.addEventListener("DOMContentLoaded", renderProjects);
