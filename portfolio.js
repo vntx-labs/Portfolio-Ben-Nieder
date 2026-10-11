@@ -80,23 +80,21 @@ function openProject(id) {
     if (!project) return;
 
     modalContent.innerHTML = `
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 p-4 md:p-6 max-h-[85vh] overflow-y-auto">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 p-6 md:p-8 max-h-[85vh] overflow-y-auto">
             
-            <!-- Linke Spalte (Bild-Bereich): Optimiert für Smartphone-Screenshots -->
-            <div class="md:col-span-4 w-full bg-gray-100 dark:bg-gray-900/40 rounded-xl overflow-hidden flex justify-center items-center p-4 relative min-h-[350px] md:min-h-[500px]">
-                <div 
-                    class="absolute inset-0 bg-cover bg-center blur-lg opacity-10 scale-110 pointer-events-none"
-                    style="background-image: url('${project.screenshot}')">
+            <!-- Linke Spalte: Der Screenshot als elegantes Smartphone-Mockup zentriert -->
+            <div class="md:col-span-5 w-full bg-gray-100/50 dark:bg-gray-900/40 rounded-2xl flex justify-center items-center p-6 min-h-[400px] md:min-h-[520px]">
+                <div class="relative max-w-[240px] w-full aspect-[9/19] rounded-[2.5rem] ring-4 ring-gray-300 dark:ring-gray-700 overflow-hidden shadow-2xl bg-black flex justify-center items-center">
+                    <img
+                        src="${project.screenshot}"
+                        alt="${project.title}"
+                        class="w-full h-full object-cover image-render-crisp" 
+                    />
                 </div>
-                <img
-                    src="${project.screenshot}"
-                    alt="${project.title}"
-                    class="relative z-10 max-h-[480px] w-full max-w-[240px] object-contain rounded-lg shadow-md image-render-crisp" 
-                />
             </div>
             
-            <!-- Rechte Spalte (Projektdetails) -->
-            <div class="md:col-span-8 flex flex-col justify-between py-2">
+            <!-- Rechte Spalte: Die Projektdetails -->
+            <div class="md:col-span-7 flex flex-col justify-between py-2">
                 <div>
                     <div class="flex justify-between items-start gap-4">
                         <h2 class="text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-white leading-tight">
@@ -110,14 +108,14 @@ function openProject(id) {
                         </button>
                     </div>
 
-                    <p class="mt-4 text-sm md:text-base text-gray-600 dark:text-gray-300 leading-relaxed">
+                    <p class="mt-4 text-base text-gray-600 dark:text-gray-300 leading-relaxed">
                         ${project.description}
                     </p>
 
-                    <!-- Tech Tags (Korrektur: Backslash entfernt) -->
+                    <!-- Tech Tags (Fehler mit Backslash komplett behoben!) -->
                     <div class="flex flex-wrap gap-2 mt-6">
                         ${project.techTags.map(tag => `
-                            <span class="px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-700/50 text-gray-800 dark:text-gray-200 text-xs font-semibold">
+                            <span class="px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs font-semibold tracking-wide">
                                 \${tag}
                             </span>
                         `).join("")}
@@ -130,7 +128,7 @@ function openProject(id) {
                         <a
                             href="\${project.liveUrl}"
                             target="_blank"
-                            class="inline-flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white font-medium px-5 py-2.5 rounded-xl text-sm transition shadow-sm hover:shadow">
+                            class="inline-flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-3 rounded-xl text-sm transition shadow-md hover:shadow-lg">
                             🌐 Live Demo
                         </a>
                     ` : ""}
@@ -139,7 +137,7 @@ function openProject(id) {
                         <a
                             href="\${project.downloadUrl}"
                             target="_blank"
-                            class="inline-flex items-center justify-center bg-gray-700 hover:bg-gray-600 text-white font-medium px-5 py-2.5 rounded-xl text-sm transition shadow-sm hover:shadow">
+                            class="inline-flex items-center justify-center bg-gray-700 hover:bg-gray-600 text-white font-medium px-6 py-3 rounded-xl text-sm transition shadow-md hover:shadow-lg">
                             💾 Download
                         </a>
                     ` : ""}
