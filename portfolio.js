@@ -12,7 +12,7 @@ const PROJECTS = [
     id: 2,
     title: "BlogConnect",
     description: "Eine moderne, reaktionsschnelle Blog-Plattform (SPA) mit vollständigem Content Management System (CRUD) für Posts und Kommentare. Beinhaltet eine Benutzerauthentifizierung, Tag-Filterung, einen personalisierten Feed sowie eine Author-Follow-Funktion. (Bei Klick auf Live Demo kann es bis zu 1 Minute dauern bis der Render-Dienst aufwacht)",
-    screenshot: "img/blogconnect.png",
+    screenshot: "img/blogconnect.svg",
     liveUrl: "https://tinyurl.com",
     downloadUrl: "",
     techTags: ["JavaScript (Vanilla)", "HTML5", "Tailwind CSS", "SPA", "Node.js (Impl. API)"]
@@ -21,7 +21,7 @@ const PROJECTS = [
     id: 3,
     title: "Zentrale Einkaufsliste",
     description: "Eine Android-App zur Verwaltung von Einkaufslisten. Unterstützt automatische Mengenzusammenführung, Live-Updates, Artikelkategorien und ein einfaches UI mit Checkboxen zum Abhaken von Artikeln. Alles läuft offline mit Room-Datenbank und MVVM-Architektur.",
-    screenshot: "img/zentraleeinkaufsliste.png",
+    screenshot: "img/zentraleeinkaufsliste.svg",
     liveUrl: "Zentrale Einkaufsliste Demo",
     downloadUrl: "https://google.com",
     techTags: ["Java", "Android Studio", "Room Database", "MVVM", "LiveData", "RecyclerView", "ViewBinding"]
