@@ -92,9 +92,14 @@ function openProject(id){
 
     modalContent.innerHTML=`
 
-        <img
-            src="${project.screenshot}"
-            class="w-full h-80 object-cover">
+        <div class="w-full h-[450px] bg-gray-100 dark:bg-gray-900/50 flex justify-center items-center overflow-hidden rounded-xl mb-6">
+            <img
+                src="${project.screenshot}"
+                alt="${project.title}"
+                class="h-full w-auto object-contain max-w-full" 
+            />
+        </div>
+
 
         <div class="p-8">
 
