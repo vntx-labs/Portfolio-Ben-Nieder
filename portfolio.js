@@ -82,19 +82,17 @@ function openProject(id) {
     modalContent.innerHTML = `
         <div class="grid grid-cols-1 md:grid-cols-12 gap-8 p-6 md:p-8 max-h-[85vh] overflow-y-auto">
             
-            <!-- Linke Spalte: Der Screenshot als elegantes Smartphone-Mockup zentriert -->
-            <div class="md:col-span-5 w-full bg-gray-100/50 dark:bg-gray-900/40 rounded-2xl flex justify-center items-center p-6 min-h-[400px] md:min-h-[520px]">
-                <div class="relative max-w-[240px] w-full aspect-[9/19] rounded-[2.5rem] ring-4 ring-gray-300 dark:ring-gray-700 overflow-hidden shadow-2xl bg-black flex justify-center items-center">
-                    <img
-                        src="${project.screenshot}"
-                        alt="${project.title}"
-                        class="w-full h-full object-cover image-render-crisp" 
-                    />
-                </div>
+            <!-- Linke Spalte: Flexibler Container, der sich perfekt an die SVG anpasst -->
+            <div class="md:col-span-5 w-full flex justify-center items-start bg-gray-50 dark:bg-gray-900/20 rounded-2xl p-4">
+                <img
+                    src="${project.screenshot}"
+                    alt="${project.title}"
+                    class="w-full max-w-[280px] md:max-w-[320px] h-auto object-contain rounded-xl shadow-md" 
+                />
             </div>
             
             <!-- Rechte Spalte: Die Projektdetails -->
-            <div class="md:col-span-7 flex flex-col justify-between py-2">
+            <div class="md:col-span-7 flex flex-col justify-between">
                 <div>
                     <div class="flex justify-between items-start gap-4">
                         <h2 class="text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-white leading-tight">
@@ -112,7 +110,7 @@ function openProject(id) {
                         ${project.description}
                     </p>
 
-                    <!-- Tech Tags (Fehler mit Backslash komplett behoben!) -->
+                    <!-- Tech Tags -->
                     <div class="flex flex-wrap gap-2 mt-6">
                         ${project.techTags.map(tag => `
                             <span class="px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs font-semibold tracking-wide">
