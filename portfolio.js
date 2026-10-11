@@ -82,8 +82,8 @@ function openProject(id) {
     modalContent.innerHTML = `
         <div class="grid grid-cols-1 md:grid-cols-12 gap-6 p-4 md:p-6 max-h-[85vh] overflow-y-auto">
             
-            <!-- Linke Spalte (Modal-Bild-Container): Perfekt für Smartphone- & Desktop-Formate -->
-            <div class="md:col-span-5 w-full bg-gray-100 dark:bg-gray-900/40 rounded-xl overflow-hidden flex justify-center items-center p-4 relative min-h-[300px] md:min-h-[450px]">
+            <!-- Linke Spalte (Bild-Bereich): Optimiert für Smartphone-Screenshots -->
+            <div class="md:col-span-4 w-full bg-gray-100 dark:bg-gray-900/40 rounded-xl overflow-hidden flex justify-center items-center p-4 relative min-h-[350px] md:min-h-[500px]">
                 <div 
                     class="absolute inset-0 bg-cover bg-center blur-lg opacity-10 scale-110 pointer-events-none"
                     style="background-image: url('${project.screenshot}')">
@@ -91,12 +91,12 @@ function openProject(id) {
                 <img
                     src="${project.screenshot}"
                     alt="${project.title}"
-                    class="relative z-10 max-h-[420px] w-auto max-w-full object-contain rounded-lg shadow-md image-render-crisp" 
+                    class="relative z-10 max-h-[480px] w-full max-w-[240px] object-contain rounded-lg shadow-md image-render-crisp" 
                 />
             </div>
             
             <!-- Rechte Spalte (Projektdetails) -->
-            <div class="md:col-span-7 flex flex-col justify-between py-2">
+            <div class="md:col-span-8 flex flex-col justify-between py-2">
                 <div>
                     <div class="flex justify-between items-start gap-4">
                         <h2 class="text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-white leading-tight">
@@ -114,7 +114,7 @@ function openProject(id) {
                         ${project.description}
                     </p>
 
-                    <!-- Tech Tags -->
+                    <!-- Tech Tags (Korrektur: Backslash entfernt) -->
                     <div class="flex flex-wrap gap-2 mt-6">
                         ${project.techTags.map(tag => `
                             <span class="px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-700/50 text-gray-800 dark:text-gray-200 text-xs font-semibold">
