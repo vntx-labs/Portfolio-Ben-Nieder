@@ -43,7 +43,7 @@ function renderProjects() {
             <img
                 src="${project.screenshot}"
                 alt="${project.title}"
-                class="w-full h-56 object-cover">
+                class="w-[205px] h-[246px] object-cover"
 
             <div class="p-6">
 
