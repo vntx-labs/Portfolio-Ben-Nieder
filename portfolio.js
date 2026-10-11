@@ -41,9 +41,11 @@ function renderProjects() {
             data-id="${project.id}">
 
             <img
-                src="${project.screenshot}"
-                alt="${project.title}"
-                class="w-full h-56"
+              src="${project.screenshot}"
+              alt="${project.title}"
+              class="w-full h-56 object-cover object-top" 
+            />
+
 
             <div class="p-6">
 
