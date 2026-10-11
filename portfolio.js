@@ -40,11 +40,14 @@ function renderProjects() {
             class="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-2 transition duration-300 cursor-pointer group"
             data-id="${project.id}">
 
-            <img
-              src="${project.screenshot}"
-              alt="${project.title}"
-              class="w-full h-56 object-cover object-top" 
-            />
+            <div class="w-full h-56 bg-gray-100 dark:bg-gray-900 flex justify-center items-center overflow-hidden">
+                <img
+                    src="${project.screenshot}"
+                    alt="${project.title}"
+                    class="h-full w-auto object-contain" 
+                />
+            </div>
+
 
 
             <div class="p-6">
